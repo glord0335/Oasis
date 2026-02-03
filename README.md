@@ -40,7 +40,7 @@
 ### 编译安装
 ```bash
 # 克隆仓库
-git clone https://github.com/your-username/Oasis.git
+git clone https://github.com/glord0335/Oasis.git
 cd Oasis
 
 # 创建并进入构建目录
@@ -80,9 +80,15 @@ Oasis/
 ---
 
 ## 🎨 样式预览
-*(您可以根据实际项目运行截图替换此处链接)*
-- [主界面预览](assets/main_preview.png)
-- [统计分析预览](assets/stats_view.png)
+[主界面预览]
+
+- ![image-20260203162630509](https://gcore.jsdelivr.net/gh/GaoSHF/7011/blogs/202505/image-20260203162630509.png)
+
+- ![image-20260203162808667](https://gcore.jsdelivr.net/gh/GaoSHF/7011/blogs/202505/image-20260203162808667.png)
+
+- ![image-20260203162846540](https://gcore.jsdelivr.net/gh/GaoSHF/7011/blogs/202505/image-20260203162846540.png)
+
+  
 
 ---
 
