@@ -1,0 +1,42 @@
+/* Global Styles for HydraFlow */
+
+QWidget {
+    font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+}
+
+QPushButton#confirm {
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #2196F3, stop:1 #00BCD4);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-weight: bold;
+}
+
+QPushButton#confirm:hover {
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #1E88E5, stop:1 #00ACC1);
+}
+
+QPushButton#delay {
+    background-color: #F8F9FA;
+    color: #666;
+    border: 1px solid #DEE2E6;
+    border-radius: 6px;
+    padding: 8px 20px;
+}
+
+QPushButton#delay:hover {
+    background-color: #E9ECEF;
+}
+
+QLabel#popupTitle {
+    color: #2196F3;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+QLabel#popupContent {
+    color: #495057;
+    font-size: 14px;
+    line-height: 1.5;
+}
