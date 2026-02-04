@@ -17,7 +17,7 @@ PopupWidget::PopupWidget(QWidget *parent)
   setAttribute(Qt::WA_TranslucentBackground);
   setAttribute(Qt::WA_ShowWithoutActivating);
 
-  setFixedSize(320, 180);
+  setFixedSize(400, 225);
 
   m_autoHideTimer = new QTimer(this);
   m_autoHideTimer->setSingleShot(true);

@@ -2,12 +2,14 @@
 #include <QDebug>
 #include <QDir>
 #include <QFile>
+#include <QSettings>
 #include <QTextCodec>
 #include <QTextStream>
 
 PlantSystem::PlantSystem(QObject *parent)
     : QObject(parent), m_growthValue(0), m_todayWaterIntake(0),
-      m_status(Seedling) {
+      m_harvestCount(0), m_status(Seedling) {
+  loadGrowthData(); // 加载持久化成长数据
   m_lastDrinkTime = QDateTime::currentDateTime();
   loadTodayRecords(); // 加载今日历史记录
 }
@@ -25,6 +27,8 @@ void PlantSystem::recordDrink(int ml) {
 
   // 写入日志文件
   writeToLog(ml);
+  // 持久化保存
+  saveGrowthData();
 
   updateState();
 }
@@ -160,7 +164,7 @@ void PlantSystem::loadTodayRecords() {
 
         // 更新统计数据（使用最后一条记录的值）
         m_todayWaterIntake = total;
-        m_growthValue = growth;
+        // 注意：不在这里加载 m_growthValue，已由 loadGrowthData 处理
         m_lastDrinkTime = record.timestamp;
 
         recordCount++;
@@ -186,4 +190,28 @@ int PlantSystem::todayWaterIntake() const { return m_todayWaterIntake; }
 
 QList<PlantSystem::DrinkRecord> PlantSystem::todayDrinkRecords() const {
   return m_drinkRecords;
+}
+
+int PlantSystem::harvestCount() const { return m_harvestCount; }
+
+void PlantSystem::harvest() {
+  if (m_status == Flowering || m_growthValue >= 500) {
+    m_harvestCount++;
+    m_growthValue = 0; // 重置成长周期
+    saveGrowthData();
+    calculateStatus();
+    emit plantUpdated();
+  }
+}
+
+void PlantSystem::saveGrowthData() {
+  QSettings settings("Agil", "OasisGrowth");
+  settings.setValue("total_growth", m_growthValue);
+  settings.setValue("harvest_count", m_harvestCount);
+}
+
+void PlantSystem::loadGrowthData() {
+  QSettings settings("Agil", "OasisGrowth");
+  m_growthValue = settings.value("total_growth", 0).toInt();
+  m_harvestCount = settings.value("harvest_count", 0).toInt();
 }

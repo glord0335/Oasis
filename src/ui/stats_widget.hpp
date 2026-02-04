@@ -8,6 +8,8 @@
 #include <QListWidget>
 #include <QWidget>
 
+class QPushButton;
+
 class StatsWidget : public QWidget {
   Q_OBJECT
 public:
@@ -26,8 +28,12 @@ private:
   PlantSystem *m_plantSystem;
   SettingsManager *m_settings;
   CircularProgressBar *m_progressBar;
-  QLabel *m_growthLabel;
+  QLabel *m_percentLabel;
+  QLabel *m_amountLabel;
   QLabel *m_statusLabel;
+  QPushButton *m_harvestButton; // 收成按钮
+  QLabel *m_harvestLabel;       // 收成勋章
+  QLabel *m_growthLabel;
   QListWidget *m_recordList; // 饮水记录列表
 };
 

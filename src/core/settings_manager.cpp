@@ -1,4 +1,9 @@
 #include "settings_manager.hpp"
+#include <QCoreApplication>
+#include <QDir>
+#include <QFile>
+#include <QStandardPaths>
+#include <QTextStream>
 #include <QDebug>
 
 SettingsManager::SettingsManager(QObject *parent)
@@ -110,8 +115,42 @@ bool SettingsManager::isPaused() const {
 
 void SettingsManager::setAutoStart(bool enable) {
   m_settings.setValue("auto_start", enable);
-  // TODO: 实现 Linux 下的自启动逻辑 (如在 ~/.config/autostart/ 创建 .desktop
-  // 文件)
+
+  // 实现 Linux 下的自启动逻辑 (在 ~/.config/autostart/ 创建 .desktop 文件)
+  QString autostartPath = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + "/autostart";
+  QDir dir(autostartPath);
+  if (!dir.exists()) {
+    dir.mkpath(".");
+  }
+
+  QString desktopFilePath = autostartPath + "/oasis.desktop";
+  if (enable) {
+    QFile file(desktopFilePath);
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+      QTextStream out(&file);
+      out << "[Desktop Entry]\n";
+      out << "Type=Application\n";
+      out << "Name=Oasis\n";
+      out << "Comment=智能补水助手\n";
+      out << "Exec=" << QCoreApplication::applicationFilePath() << "\n";
+      out << "Icon=" << QCoreApplication::applicationFilePath() << "\n"; // 暂时使用程序路径作为图标
+      out << "Terminal=false\n";
+      out << "Categories=Utility;\n";
+      out << "X-GNOME-Autostart-enabled=true\n";
+      file.close();
+      qDebug() << "Autostart enabled: created" << desktopFilePath;
+    } else {
+      qWarning() << "Failed to create autostart file:" << desktopFilePath;
+    }
+  } else {
+    if (QFile::exists(desktopFilePath)) {
+      if (QFile::remove(desktopFilePath)) {
+        qDebug() << "Autostart disabled: removed" << desktopFilePath;
+      } else {
+        qWarning() << "Failed to remove autostart file:" << desktopFilePath;
+      }
+    }
+  }
 }
 
 bool SettingsManager::autoStart() const {

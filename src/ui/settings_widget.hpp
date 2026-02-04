@@ -17,6 +17,9 @@ class SettingsWidget : public QWidget {
 public:
   explicit SettingsWidget(SettingsManager *settings, QWidget *parent = nullptr);
 
+protected:
+  void showEvent(QShowEvent *event) override;
+
 signals:
   void settingsChanged();
 

@@ -1,4 +1,6 @@
 #include "settings_widget.hpp"
+#include <QApplication>
+#include <QDesktopWidget>
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QHBoxLayout>
@@ -228,4 +230,10 @@ void SettingsWidget::saveSettings() {
 
   emit settingsChanged();
   close();
+}
+
+void SettingsWidget::showEvent(QShowEvent *event) {
+  QWidget::showEvent(event);
+  QRect desktop = QApplication::desktop()->availableGeometry();
+  move((desktop.width() - width()) / 2, (desktop.height() - height()) / 2);
 }

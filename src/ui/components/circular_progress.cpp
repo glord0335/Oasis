@@ -5,7 +5,7 @@
 
 CircularProgressBar::CircularProgressBar(QWidget *parent)
     : QWidget(parent), m_value(0), m_min(0), m_max(100) {
-  setFixedSize(120, 120);
+  setFixedSize(140, 140);
 }
 
 void CircularProgressBar::setValue(int value) {
@@ -21,8 +21,10 @@ void CircularProgressBar::setRange(int min, int max) {
   update();
 }
 
-void CircularProgressBar::setText(const QString &text) {
-  m_text = text;
+// 已移除 setText
+
+void CircularProgressBar::setIconText(const QString &icon) {
+  m_iconText = icon;
   update();
 }
 
@@ -31,19 +33,23 @@ void CircularProgressBar::paintEvent(QPaintEvent *event) {
   QPainter painter(this);
   painter.setRenderHint(QPainter::Antialiasing);
 
-  int side = qMin(width(), height());
+  int w = width();
+  int h = height();
+  int side = qMin(w, h);
   int thickness = 8;
-  QRectF rect(thickness / 2.0, thickness / 2.0, side - thickness,
-              side - thickness);
+
+  // 圆环居中展示
+  int circleSize = side - thickness;
+  QRectF circleRect(thickness / 2.0, thickness / 2.0, circleSize, circleSize);
 
   // 背景圆环
-  QPen bgPen(QColor(255, 255, 255, 100)); // 略微增加不透明度
+  QPen bgPen(QColor(255, 255, 255, 100));
   bgPen.setWidth(thickness);
   bgPen.setCapStyle(Qt::RoundCap);
   painter.setPen(bgPen);
-  painter.drawArc(rect, 0, 360 * 16);
+  painter.drawArc(circleRect, 0, 360 * 16);
 
-  // 进度圆环 (改用深橄榄绿以增强在鼠尾草绿背景下的对比度)
+  // 进度圆环
   QPen progressPen;
   progressPen.setWidth(thickness);
   progressPen.setCapStyle(Qt::RoundCap);
@@ -51,24 +57,14 @@ void CircularProgressBar::paintEvent(QPaintEvent *event) {
   painter.setPen(progressPen);
 
   double spanAngle = -((double)(m_value - m_min) / (m_max - m_min)) * 360 * 16;
-  painter.drawArc(rect, 90 * 16, spanAngle);
+  painter.drawArc(circleRect, 90 * 16, spanAngle);
 
-  // 文字 (改用白色以适配彩色背景)
-  painter.setPen(QColor("#FFFFFF"));
-  QFont font = painter.font();
-  font.setPointSize(11);
-  font.setBold(true);
-  painter.setFont(font);
-
-  int percent =
-      (m_max - m_min) > 0 ? (m_value - m_min) * 100 / (m_max - m_min) : 0;
-  QString percentage = QString::number(percent) + "%";
-  painter.drawText(rect.adjusted(0, -5, 0, -5), Qt::AlignCenter, percentage);
-
-  if (!m_text.isEmpty()) {
-    font.setPointSize(8);
-    font.setBold(false);
-    painter.setFont(font);
-    painter.drawText(rect.adjusted(0, 15, 0, 15), Qt::AlignCenter, m_text);
+  // 绘制圆心图标 (48px 大图标)
+  if (!m_iconText.isEmpty()) {
+    QFont iconFont = painter.font();
+    iconFont.setPointSize(48);
+    painter.setFont(iconFont);
+    painter.setPen(Qt::white);
+    painter.drawText(circleRect, Qt::AlignCenter, m_iconText);
   }
 }
